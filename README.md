@@ -83,3 +83,49 @@ Instead of just clicking around randomly in my servers, I used Jira to submit re
 - **The Result:** The software installed completely in the background with zero popups or UAC prompts disrupting the user. Sent a friendly public message to the customer letting them know the app was ready, and closed the ticket as `Resolved`.
   <img width="986" height="715" alt="Screenshot (245)" src="https://github.com/user-attachments/assets/20125f62-5c35-478a-9d81-8534d46efa30" />
 
+---
+
+##  Lessons Learned & Technical Takeaways
+
+Building and managing this helpdesk sandbox taught me how a real-world enterprise IT environment balances security with day-to-day operations. Here are my key takeaways:
+
+### 1. The Importance of Internal IT Documentation
+- **Lesson:** End-users just want to know their problem is fixed without being confused by technical jargon. 
+- **Takeaway:** I learned to structure my ticket responses into two separate channels: a simple, helpful public reply for the user, and a highly technical internal note for the IT team documenting the root cause, tools used (PDQ/GPO), and system exit codes.
+
+### 2. Group Policy Hierarchy and Scoping Controls
+- **Lesson:** Group Policies will fail or behave unexpectedly if they are linked to the wrong directory container.
+- **Takeaway:** I discovered firsthand that strict account security rules (like account lockout thresholds) are completely ignored by the domain if they are linked to sub-OUs. They *must* live inside the Default Domain Policy at the root level because the domain engine handles authentication, not individual department folders.
+
+### 3. Hardcoded IPs vs. Centralized Domain Paths (FQDN)
+- **Lesson:** Relying on raw IP addresses inside corporate configurations creates massive infrastructure risks if the network layout changes.
+- **Takeaway:** When I switched my lab network subnet scheme, my mapped drive GPOs instantly broke because they were pointed to an old static IP. I resolved this by re-engineering the target paths to use the server's fully qualified domain name (`\\dc01.lab.local\share`), ensuring the network remains resilient during future upgrades.
+
+### 4. Privilege Isolation & Endpoint Hardening
+- **Lesson:** Giving every user "Local Administrator" rights is a major security risk that leaves endpoints vulnerable to unauthorized software and malware execution.
+- **Takeaway:** By disabling local admin rights via GPO and forcing User Account Control (UAC) blocks, I learned how to securely elevate permissions in the background. Using **PDQ Deploy** from a secondary server allowed me to patch software silently over the network, completely protecting administrative credentials from being exposed on the user's monitor.
+
+
+//
+
+---
+
+## 🚀 Project Roadmap: Upcoming Workflow Expansions
+
+To continue building my Tier 1/2 helpdesk skills, I am actively developing and expanding this sandbox with future additional enterprise-style ITIL workflows:
+
+### 5. Hardware Asset Lifecycle & Procurement (Service Request)
+- **The Workflow:** `Submitted` ➡️ `Manager Approval` ➡️ `Asset Tagging & Registry` ➡️ `Deployed` ➡️ `Closed`
+- **The Lab Goal:** Practice using **Jira Assets** to track computer inventory. When an asset request is approved, I will manually assign a fake serial number/asset tag to a new client VM registry before deploying it to a user profile.
+
+### 6. Security Incident & Phishing Escalation (Incident Management)
+- **The Workflow:** `Reported` ➡️ `Triage` ➡️ `SecOps Escalation` ➡️ `Containment` ➡️ `Post-Mortem` ➡️ `Closed`
+- **The Lab Goal:** Simulate a user reporting a suspicious email link. I will practice high-priority ticket escalation procedures in Jira, use Group Policy to immediately disable the compromised user account, and simulate host isolation protocols.
+
+### 7. Major System Outage & Change Management (Change Control)
+- **The Workflow:** `RFC Submitted` (Request for Change) ➡️ `CAB Review` (Change Advisory Board) ➡️ `Implementation` ➡️ `Rollback Testing` ➡️ `Closed`
+- **The Lab Goal:** Practice the formal corporate change process for infrastructure updates. I will log a major change ticket in Jira before running a manual update or network switch overhaul on my Active Directory environment, complete with back-out/rollback plans.
+
+### 8. Temporary Privileged Access Request (Access Management)
+- **The Workflow:** `Requested` ➡️ `Security Review` ➡️ `Timed Approval` ➡️ `Revoked` ➡️ `Closed`
+- **The Lab Goal:** Practice the principle of least privilege. When a user requests temporary admin rights, I will use Jira to track the request, manually add them to a restricted administrative group in Active Directory, and then manually remove them after a simulated 2-hour window to complete the ticket lifecycle.

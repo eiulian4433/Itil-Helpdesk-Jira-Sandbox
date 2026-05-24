@@ -40,3 +40,17 @@ Instead of just clicking around randomly in my servers, I used Jira to submit re
   3. Found the user account, opened its properties, went to the *Account* tab, and checked the **"Unlock account"** box.
   4. *GPO Catch:* Realized my custom lockout rules weren't working at first because they were linked to a sub-folder. I edited the **Default Domain Policy** at the root level to force the 2-failed-attempt lockout rule system-wide.
 - **The Result:** Verified the user could log back into their Windows 10 desktop perfectly and closed out the emergency ticket.
+
+---
+
+---
+
+### Ticket 4: Software Installation Request (Service Request)
+- **The Ticket:** A standard user submitted a service request asking for the `7-Zip` utility to be installed on their workstation. Because of strict computer Group Policies, they were blocked by a Windows User Account Control (UAC) prompt and could not install it themselves.
+- **My Action in the Lab:** 
+  1. Assigned the ticket to myself in Jira and moved it to `In Progress`.
+  2. Logged into the secondary server (**SV-02**) and opened **PDQ Inventory** to verify the client machine was online and check its current software list.
+  3. Switched over to **PDQ Deploy** and selected my pre-built `7-Zip Silent Deployment` custom package.
+  4. Targeted the user's specific client machine (`Client1`) and triggered a remote background installation across the external virtual switch.
+- **The Internal IT Note:** *"Approved application request. Verified target endpoint status via PDQ Inventory asset scans. Deployed 7-Zip silently over the network using a custom MSI package rollout from SV-02. Verified zero-touch background installation completed with an exit code of 0. No end-user downtime or credential exposure required."*
+- **The Result:** The software installed completely in the background with zero popups or UAC prompts disrupting the user. Sent a friendly public message to the customer letting them know the app was ready, and closed the ticket as `Resolved`.
